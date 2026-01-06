@@ -15,7 +15,7 @@ from pathlib import Path
 
 
 def load_env():
-    # Si está congelado (exe):
+    # If it is executable (exe):
     if getattr(sys, 'frozen', False):
         base_path = Path(sys._MEIPASS)
     else:

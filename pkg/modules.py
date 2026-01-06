@@ -3,19 +3,21 @@ from pkg.settings import *
 import os
 
 
-def construct_queries(table_list: list[str], receptorRFC_list: list[str]) -> list[str]:
+def construct_queries(table_list: list[str]) -> tuple[list[str], list[str]]:
     """Construct every query for every table"""
-    queries = []
-    # Create placeholders: "?, ?" (needed when using pyodbc)
-    placeholders = ", ".join("?" * len(receptorRFC_list))
+    query_emisor, query_receptor = [], []
     for table in table_list:
-        query = f"""
-        SELECT TOP 10 *
+        query_emisor.append(f"""
+        SELECT TOP 10 [RFC_EMISOR], [NOMBRE_EMISOR]
         FROM [{table}]
-        WHERE EmisorRFC IN ({placeholders})
-        """
-        queries.append(query)
-    return queries
+        """)
+
+        query_receptor.append(f"""
+        SELECT TOP 10 [RFC_RECEPTOR], [NOMBRE_RECEPTOR]
+        FROM [{table}]
+        """)
+
+    return query_emisor, query_receptor
 
 
 def split_DataFrame(table: str, df: pd.DataFrame, max_rows=600000) -> None:
